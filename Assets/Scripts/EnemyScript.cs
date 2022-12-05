@@ -6,6 +6,8 @@ namespace TowerDefense
 {
     public class EnemyScript : MonoBehaviour
     {
+        public GameObject _wayPointsParent;
+
         List<GameObject> _wayPoints = new List<GameObject>();
 
         //Переменная для поиска GameControllerScript через камеру
@@ -15,11 +17,35 @@ namespace TowerDefense
         int _wayIndex = 0;
         Vector3 _dir;
         int _speed = 5;
+        int _health = 30;
 
         private void Start()
         {
-            _wayPoints = _mainCamera.GetComponent<GameControllerScript>()._wayPoints;
+            //_wayPoints = _mainCamera.GetComponent<GameControllerScript>()._wayPoints;
             StartCoroutine(MoveCoroutine());
+            GetWayPoints();
+        }
+
+        private void GetWayPoints()
+        {
+            for (int i = 0; i < _wayPointsParent.transform.childCount; i++)
+            {
+                _wayPoints.Add(_wayPointsParent.transform.GetChild(i).gameObject);
+            }
+        }
+
+        public void TakeDamage(int damage)
+        {
+            _health -= damage;
+            CheckIsAlive();
+        }
+
+        private void CheckIsAlive()
+        {
+            if (_health <= 0)
+            {
+                Destroy(transform.gameObject);
+            }
         }
 
         private IEnumerator MoveCoroutine()

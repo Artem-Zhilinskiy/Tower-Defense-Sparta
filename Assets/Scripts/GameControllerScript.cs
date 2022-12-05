@@ -6,8 +6,8 @@ namespace TowerDefense
 {
     public class GameControllerScript : MonoBehaviour
     {
-        [SerializeField]
+        //[SerializeField]
         //public List<GameObject> _wayPoints { get; private set; } = new List<GameObject>();
-        public List<GameObject> _wayPoints = new List<GameObject>();
+        //public List<GameObject> _wayPoints = new List<GameObject>();
     }
 }
