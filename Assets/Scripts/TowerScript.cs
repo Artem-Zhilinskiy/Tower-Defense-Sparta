@@ -6,14 +6,22 @@ namespace TowerDefense
 {
     public class TowerScript : MonoBehaviour
     {
-        private float _range = 2;
-
-        public float _currentCooldown = 1;
-        public float _cooldown = 0.5f;
-
         [SerializeField]
         private GameObject _stonePrefab;
+        [SerializeField]
+        GameControllerScript _gameControllerScript;
 
+        Tower _selfTower;
+
+        [SerializeField]
+        TowerType selfType;
+
+        private void Start()
+        {
+            _gameControllerScript = FindObjectOfType<GameControllerScript>();
+            _selfTower = _gameControllerScript.AllTowers[(int)selfType];
+            GetComponent<SpriteRenderer>().sprite = _selfTower._spr;
+        }
         private void Update()
         {
             if (CanShoot())
@@ -21,15 +29,15 @@ namespace TowerDefense
                 SearchTarget();
             }
 
-            if (_currentCooldown > 0)
+            if (_selfTower._currentCooldown > 0)
             {
-                _currentCooldown -= Time.deltaTime;
+                _selfTower._currentCooldown -= Time.deltaTime;
             }
         }
 
         private bool CanShoot()
         {
-            if (_currentCooldown <= 0)
+            if (_selfTower._currentCooldown <= 0)
             {
                 return true;
             }
@@ -46,7 +54,7 @@ namespace TowerDefense
                 float _currentDistance = Vector2.Distance(transform.position, enemy.transform.position);
 
                 if (_currentDistance < _nearestEnemyDistance &&
-                    _currentDistance <= _range)
+                    _currentDistance <= _selfTower._range)
                 {
                     _nearestEnemy = enemy.transform;
                     _nearestEnemyDistance = _currentDistance;
@@ -62,9 +70,10 @@ namespace TowerDefense
 
         private void Shoot(Transform _enemy)
         {
-            _currentCooldown = _cooldown;
+            _selfTower._currentCooldown = _selfTower._cooldown;
 
             GameObject _stone = Instantiate(_stonePrefab);
+            _stone.GetComponent<TowerProjectileScript>()._selfProjectile = _gameControllerScript.AllProjectiles[(int)selfType];
             _stone.transform.position = transform.position;
             _stone.GetComponent<TowerProjectileScript>().SetTarget(_enemy);
         }

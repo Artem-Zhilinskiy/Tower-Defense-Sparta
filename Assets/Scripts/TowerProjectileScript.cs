@@ -6,11 +6,13 @@ namespace TowerDefense
 {
     public class TowerProjectileScript : MonoBehaviour
     {
-
-        float _speed = 10;
-        int _damage = 10;
-
         Transform _target;
+        public TowerProjectile _selfProjectile;
+
+        private void Start()
+        {
+            GetComponent<SpriteRenderer>().sprite = _selfProjectile._sprite;
+        }
 
         public void SetTarget(Transform enemy)
         {
@@ -23,13 +25,13 @@ namespace TowerDefense
             {
                 if (Vector2.Distance(transform.position, _target.position) < 0.1f)
                 {
-                    _target.GetComponent<EnemyScript>().TakeDamage(_damage);
+                    _target.GetComponent<EnemyScript>().TakeDamage(_selfProjectile._damage);
                     Destroy(transform.gameObject);
                 }
                 else
                 {
                     Vector2 _direction = _target.position - transform.position;
-                    transform.Translate(_direction.normalized * Time.deltaTime * _speed);
+                    transform.Translate(_direction.normalized * Time.deltaTime * _selfProjectile._speed);
                 }
             }
             else
