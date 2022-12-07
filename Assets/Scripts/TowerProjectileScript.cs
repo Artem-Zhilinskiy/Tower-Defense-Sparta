@@ -7,10 +7,14 @@ namespace TowerDefense
     public class TowerProjectileScript : MonoBehaviour
     {
         Transform _target;
-        public TowerProjectile _selfProjectile;
+        TowerProjectile _selfProjectile;
+        public Tower _selfTower;
+        GameControllerScript _gameControllerScript;
 
         private void Start()
         {
+            _gameControllerScript = FindObjectOfType<GameControllerScript>();
+            _selfProjectile = _gameControllerScript.AllProjectiles[_selfTower.type];
             GetComponent<SpriteRenderer>().sprite = _selfProjectile._sprite;
         }
 
@@ -25,8 +29,7 @@ namespace TowerDefense
             {
                 if (Vector2.Distance(transform.position, _target.position) < 0.1f)
                 {
-                    _target.GetComponent<EnemyScript>().TakeDamage(_selfProjectile._damage);
-                    Destroy(transform.gameObject);
+                    Hit();
                 }
                 else
                 {
@@ -43,6 +46,21 @@ namespace TowerDefense
         private void Update()
         {
             Move();
+        }
+
+        private void Hit()
+        {
+            switch(_selfTower.type)
+            {
+                case (int)TowerType.First_Tower:
+                    _target.GetComponent<EnemyScript>().StartSlow(3, 1);
+                    _target.GetComponent<EnemyScript>().TakeDamage(_selfProjectile._damage);
+                    break;
+                case (int)TowerType.Second_Tower:
+                    _target.GetComponent<EnemyScript>().AOEDamage(2, _selfProjectile._damage);
+                    break;
+            }
+            Destroy(transform.gameObject);
         }
 
     }

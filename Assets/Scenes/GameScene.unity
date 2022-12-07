@@ -6683,7 +6683,7 @@ PrefabInstance:
     - target: {fileID: 6699393294592569382, guid: b7994e8999759a1428815a90d4a620fb,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -120
+      value: -480
       objectReference: {fileID: 0}
     - target: {fileID: 6699393294592569382, guid: b7994e8999759a1428815a90d4a620fb,
         type: 3}
@@ -7207,10 +7207,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timeToSpawn: 1
-  _enemyPrefab: {fileID: 1211896046212543668, guid: f92aaebdcdd9c0f478fabc29fd8b0e7c,
+  _enemyPrefab: {fileID: 6699393294592569383, guid: c476a9b8359cae64c99ddd95f4815a34,
     type: 3}
   _wayPointParent: {fileID: 904653550}
   _spawnCountText: {fileID: 324985288}
+  _gameControllerScript: {fileID: 519420030}
 --- !u!1 &779353455
 GameObject:
   m_ObjectHideFlags: 0

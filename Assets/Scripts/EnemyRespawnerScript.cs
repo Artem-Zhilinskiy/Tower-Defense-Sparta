@@ -19,6 +19,8 @@ namespace TowerDefense
         private GameObject _wayPointParent;
         [SerializeField]
         private Text _spawnCountText;
+        [SerializeField]
+        GameControllerScript _gameControllerScript;
 
         private IEnumerator SpawnEnemy(int _enemyCount)
         {
@@ -27,6 +29,7 @@ namespace TowerDefense
             {
                 GameObject _tmpEnemy = Instantiate(_enemyPrefab);
                 _tmpEnemy.transform.SetParent(gameObject.transform, false);
+                _tmpEnemy.GetComponent<EnemyScript>()._selfEnemy = new Enemy (_gameControllerScript.AllEnemies[Random.Range(0, _gameControllerScript.AllEnemies.Count)]);
                 _tmpEnemy.GetComponent<EnemyScript>()._wayPointsParent = _wayPointParent;
                 yield return new WaitForSeconds(_delay);
             }

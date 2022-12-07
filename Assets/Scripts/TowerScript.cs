@@ -21,14 +21,11 @@ namespace TowerDefense
             _gameControllerScript = FindObjectOfType<GameControllerScript>();
             _selfTower = _gameControllerScript.AllTowers[(int)selfType];
             GetComponent<SpriteRenderer>().sprite = _selfTower._spr;
+
+            InvokeRepeating("SearchTarget", 0, .1f);
         }
         private void Update()
         {
-            if (CanShoot())
-            {
-                SearchTarget();
-            }
-
             if (_selfTower._currentCooldown > 0)
             {
                 _selfTower._currentCooldown -= Time.deltaTime;
@@ -46,24 +43,27 @@ namespace TowerDefense
 
         private void SearchTarget()
         {
-            Transform _nearestEnemy = null;
-            float _nearestEnemyDistance = Mathf.Infinity;
-
-            foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            if (CanShoot())
             {
-                float _currentDistance = Vector2.Distance(transform.position, enemy.transform.position);
+                Transform _nearestEnemy = null;
+                float _nearestEnemyDistance = Mathf.Infinity;
 
-                if (_currentDistance < _nearestEnemyDistance &&
-                    _currentDistance <= _selfTower._range)
+                foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
                 {
-                    _nearestEnemy = enemy.transform;
-                    _nearestEnemyDistance = _currentDistance;
-                } 
-            }
+                    float _currentDistance = Vector2.Distance(transform.position, enemy.transform.position);
 
-            if (_nearestEnemy != null)
-            {
-                Shoot(_nearestEnemy);
+                    if (_currentDistance < _nearestEnemyDistance &&
+                        _currentDistance <= _selfTower._range)
+                    {
+                        _nearestEnemy = enemy.transform;
+                        _nearestEnemyDistance = _currentDistance;
+                    }
+                }
+
+                if (_nearestEnemy != null)
+                {
+                    Shoot(_nearestEnemy);
+                }
             }
 
         }
@@ -73,7 +73,7 @@ namespace TowerDefense
             _selfTower._currentCooldown = _selfTower._cooldown;
 
             GameObject _stone = Instantiate(_stonePrefab);
-            _stone.GetComponent<TowerProjectileScript>()._selfProjectile = _gameControllerScript.AllProjectiles[(int)selfType];
+            _stone.GetComponent<TowerProjectileScript>()._selfTower = _selfTower;
             _stone.transform.position = transform.position;
             _stone.GetComponent<TowerProjectileScript>().SetTarget(_enemy);
         }
