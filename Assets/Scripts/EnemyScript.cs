@@ -6,33 +6,30 @@ namespace TowerDefense
 {
     public class EnemyScript : MonoBehaviour
     {
-        public GameObject _wayPointsParent;
-
-        List<GameObject> _wayPoints = new List<GameObject>();
+        List<GameObject> wayPoints = new List<GameObject>();
 
         //Переменная для поиска GameControllerScript через камеру
         [SerializeField]
         private GameObject _mainCamera;
 
         public Enemy _selfEnemy;
+
         Vector2 _direction;
 
         int _wayIndex = 0;
+        public int speed = 10;
 
         private void Start()
         {
             //_wayPoints = _mainCamera.GetComponent<GameControllerScript>()._wayPoints;
             StartCoroutine(MoveCoroutine());
             GetWayPoints();
-            GetComponent<SpriteRenderer>().sprite = _selfEnemy._sprite;
+            //GetComponent<SpriteRenderer>().sprite = _selfEnemy._sprite;
         }
 
         private void GetWayPoints()
         {
-            for (int i = 0; i < _wayPointsParent.transform.childCount; i++)
-            {
-                _wayPoints.Add(_wayPointsParent.transform.GetChild(i).gameObject);
-            }
+            wayPoints = GameObject.Find("LevelGroup").GetComponent<LevelManagerScript>().wayPoints;
         }
 
         public void TakeDamage(float damage)
@@ -54,11 +51,11 @@ namespace TowerDefense
             while (transform.position.x < 1140)
             {
                 yield return Time.deltaTime;
-                _direction = _wayPoints[_wayIndex].transform.position - transform.position;
+                _direction = wayPoints[_wayIndex].transform.position - transform.position;
                 transform.Translate(_direction.normalized * _selfEnemy._speed * Time.deltaTime);
-                if (Vector3.Distance(transform.position, _wayPoints[_wayIndex].transform.position) < 0.05f)
+                if (Vector3.Distance(transform.position, wayPoints[_wayIndex].transform.position) < 0.05f)
                 {
-                    if (_wayIndex < _wayPoints.Count - 1)
+                    if (_wayIndex < wayPoints.Count - 1)
                     {
                         _wayIndex++;
                     }
